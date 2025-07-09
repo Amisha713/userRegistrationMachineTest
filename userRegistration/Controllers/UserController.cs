@@ -18,21 +18,43 @@ namespace userRegistration.Controllers
         }
 
         // GET: /User
-        public IActionResult Index(string? search)
+        public IActionResult Index(string searchName, string genderFilter, int? stateFilter)
         {
             var users = _context.Users
                 .Include(u => u.State)
                 .Include(u => u.City)
                 .AsQueryable();
 
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrWhiteSpace(searchName))
             {
-                users = users.Where(u => u.Name.Contains(search));
+                searchName = searchName.ToLower();
+                users = users.Where(u => u.Name.ToLower().Contains(searchName));
             }
 
-            var result = users?.ToList();
-            return View(result);
+            // Filter by Gender
+            if (!string.IsNullOrWhiteSpace(genderFilter))
+            {
+                users = users.Where(u => u.Gender.ToString() == genderFilter);
+            }
+
+            // Filter by State
+            if (stateFilter.HasValue && stateFilter.Value != 0)
+            {
+                users = users.Where(u => u.StateId == stateFilter);
+            }
+
+            // Populate filters in ViewBag
+            ViewBag.SearchName = searchName;
+            ViewBag.GenderFilter = genderFilter;
+            ViewBag.StateFilter = stateFilter;
+
+            ViewBag.Genders = Enum.GetNames(typeof(userRegistration.Models.Enums.Gender)).ToList();
+
+            ViewBag.States = _context.States.ToList();
+
+            return View(users.ToList());
         }
+
 
         // GET: /User/Create
         public IActionResult CreateUser()
@@ -59,8 +81,6 @@ namespace userRegistration.Controllers
                         byte[] photoBytes = ms.ToArray();
                         model.PhotoBlob = Convert.ToBase64String(photoBytes); // 👈 Store as base64 string
 
-                        //model.PhotoBlob = ms.ToArray();
-                        //model.PhotoBase64 = Convert.ToBase64String(photoBytes);
                     }
                 }
 

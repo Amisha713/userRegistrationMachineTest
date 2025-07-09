@@ -1,38 +1,107 @@
 ﻿@model IEnumerable<userRegistration.Models.User>
-
 @{
     ViewData["Title"] = "User List";
 }
 
 <h2>Registered Users</h2>
 
-<form method="get" class="form-inline mb-3">
-    <input type="text" name="searchName" class="form-control" placeholder="Search by name..." value="@ViewBag.SearchName" />
-    <button type="submit" class="btn btn-secondary ml-2">Search</button>
+<!-- Search & Filter Form -->
+<form method="get" class="form-inline mb-4">
+    <input type="text" name="searchName" class="form-control mr-2" placeholder="Search by name..." value="@ViewBag.SearchName" />
+
+         @{
+            var genders = ViewBag.Genders as List<string> ?? new List<string>();
+        }
+
+        <select name="genderFilter" class="form-control mr-2">
+            <option value="">-- Select Gender --</option>
+            @foreach (var gender in genders)
+            {
+                var isSelected = ViewBag.GenderFilter == gender ? "selected" : "";
+                
+            if (isSelected == "selected")
+            {
+
+                <option value="@gender" selected="@isSelected">@gender</option>
+            }
+            else
+            {
+                <option value="@gender" >@gender</option>
+            }
+            }
+        </select>
+
+
+    <select name="stateFilter" class="form-control mr-2">
+        <option value="0">-- Select State --</option>
+        @{
+            var states = ViewBag.States as List<userRegistration.Models.State> ?? new List<userRegistration.Models.State>();
+            var selectedStateId = ViewBag.StateFilter?.ToString();
+        }
+
+        <option value="0">-- Select State --</option>
+        @foreach (var state in states)
+        {
+            var isSelected = selectedStateId == state.Id.ToString() ? "selected" : "";
+            if(isSelected == "selected")
+            {
+                
+                <option value="@state.Id" selected="@isSelected">@state.Name</option>
+            }
+            else
+            {
+                <option value="@state.Id" >@state.Name</option>
+            }
+        }
+    </select>
+
+    <button type="submit" class="btn btn-primary">Search</button>
 </form>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Gender</th>
-            <th>Email</th>
-            <th>Contact</th>
-            <th>State</th>
-            <th>City</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
+<!-- Results Table -->
+@if (!Model.Any())
+{
+    <div class="alert alert-warning">No records found.</div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
             <tr>
-                <td><a href="mailto:@user.Email">@user.Name</a></td>
-                <td>@user.Gender</td>
-                <td>@user.Email</td>
-                <td>@user.ContactNumber</td>
-                <td>@user.State?.Name</td>
-                <td>@user.City?.Name</td>
+                <th>Reg. No.</th>
+                <th>Photo</th>
+                <th>Name &lt;email/&gt;</th>
+                <th>Gender</th>
+                <th>State</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Id</td> <!-- Assuming Id as Reg. No. -->
+
+                    <td>
+                        @if (!string.IsNullOrEmpty(user.PhotoBlob))
+                        {
+                            var imgSrc = $"data:image/png;base64,{user.PhotoBlob}";
+                            <img src="@imgSrc" alt="Photo" width="50" height="50" style="object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <span>No Photo</span>
+                        }
+                    </td>
+
+                    <td>
+                        <a href="mailto:@user.Email">@user.Name</a>
+                    </td>
+
+                    <td>@user.Gender</td>
+                    <td>@user.State?.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}

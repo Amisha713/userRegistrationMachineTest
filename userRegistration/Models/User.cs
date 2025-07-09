@@ -24,6 +24,8 @@ namespace userRegistration.Models
         [Phone]
         [Display(Name = "Contact Number")]
         public string? ContactNumber { get; set; }
+        public string? MobileNumber { get; set; }
+
 
         [Required]
         public int StateId { get; set; }

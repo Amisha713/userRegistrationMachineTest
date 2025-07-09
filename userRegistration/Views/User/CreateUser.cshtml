@@ -6,93 +6,107 @@
 
 <h2>User Registration</h2>
 
-<form asp-action="CreateUser" enctype="multipart/form-data" id="userForm">
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" maxlength="25" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <form asp-action="CreateUser" enctype="multipart/form-data" id="userForm">
+                <div class="form-group">
+                    <label asp-for="Name"></label><span class="text-danger">*</span>
+                    <input asp-for="Name" class="form-control" maxlength="25" />
+                    <span asp-validation-for="Name" id="NameError" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Gender"></label><span class="text-danger">*</span>
+                    @foreach (var gender in Enum.GetValues(typeof(userRegistration.Models.Enums.Gender)))
+                    {
+                        var selectedGender = Model?.Gender.ToString();
+
+                        <label class="me-3">
+                            <input type="radio" name="Gender" value="@gender"
+                                   @(selectedGender == gender.ToString() ? "checked" : "") />
+                            @gender
+                        </label>
+                    }
+
+
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DateOfBirth"></label><span class="text-danger">*</span>
+                    <input asp-for="DateOfBirth" class="form-control" placeholder="dd/mm/yyyy" />
+                   
+                    <span class="text-danger" id="DOBError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-control" />
+                    
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ContactNumber">Mobile/Phone</label><span class="text-danger">*</span>
+                    <input asp-for="ContactNumber" class="form-control" />
+                    <span asp-validation-for="ContactNumber" class="text-danger"></span>/
+                    <input asp-for="MobileNumber" class="form-control" />
+                    <span asp-validation-for="MobileNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="StateId">State</label><span class="text-danger">*</span>
+                    <select asp-for="StateId" class="form-control" id="StateId">
+                        <option value="">--Select State--</option>
+                        @foreach (var state in ViewBag.States)
+                        {
+                            <option value="@state.Id">@state.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="StateId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CityId">City</label>
+                    <select asp-for="CityId" class="form-control" id="CityId">
+                        <option value="">--Select City--</option>
+                        @foreach (var city in ViewBag.Cities)
+                        {
+                            <option value="@city.Id">@city.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CityId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Hobbies</label><br />
+                    <input type="checkbox" name="Hobbies" value="Chess" /> Chess
+                    <input type="checkbox" name="Hobbies" value="Cricket" /> Cricket
+                    <input type="checkbox" name="Hobbies" value="Football" /> Football
+                    <input type="checkbox" name="Hobbies" value="Hockey" /> Hockey
+                </div>
+
+                <div class="form-group">
+                    <label>Photo (JPG/PNG only)</label>
+                    <input type="file" name="Photo" accept=".jpg,.jpeg,.png" class="form-control" />
+                </div>
+
+
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" asp-for="IsTermsAccepted" />
+                    <label class="form-check-label" asp-for="IsTermsAccepted">I agree to Terms and Conditions</label>
+                    @* <span asp-validation-for="IsTermsAccepted" id="termsError" class="text-danger"></span> *@
+                    <span class="text-danger" id="termsError"></span>
+
+                </div>
+
+
+                <br />
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Gender"></label>
-        <select asp-for="Gender" class="form-control">
-            <option value="">--Select Gender--</option>
-            @foreach (var gender in Enum.GetValues(typeof(userRegistration.Models.Enums.Gender)))
-            {
-                <option value="@gender">@gender</option>
-            }
-        </select>
-        <span asp-validation-for="Gender" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="DateOfBirth"></label>
-        <input asp-for="DateOfBirth" class="form-control" placeholder="dd/mm/yyyy" />
-        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ContactNumber"></label>
-        <input asp-for="ContactNumber" class="form-control" />
-        <span asp-validation-for="ContactNumber" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="StateId">State</label>
-        <select asp-for="StateId" class="form-control" id="StateId">
-            <option value="">--Select State--</option>
-            @foreach (var state in ViewBag.States)
-            {
-                <option value="@state.Id">@state.Name</option>
-            }
-        </select>
-        <span asp-validation-for="StateId" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="CityId">City</label>
-        <select asp-for="CityId" class="form-control" id="CityId">
-            <option value="">--Select City--</option>
-            @foreach (var city in ViewBag.Cities)
-            {
-                <option value="@city.Id">@city.Name</option>
-            }
-        </select>
-        <span asp-validation-for="CityId" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label>Hobbies</label><br />
-        <input type="checkbox" name="Hobbies" value="Chess" /> Chess
-        <input type="checkbox" name="Hobbies" value="Cricket" /> Cricket
-        <input type="checkbox" name="Hobbies" value="Football" /> Football
-        <input type="checkbox" name="Hobbies" value="Hockey" /> Hockey
-    </div>
-
-    <div class="form-group">
-        <label>Photo (JPG/PNG only)</label>
-        <input type="file" name="Photo" accept=".jpg,.jpeg,.png" class="form-control" />
-    </div>
-
-    
-    <div class="form-check">
-        <input type="checkbox" class="form-check-input" asp-for="IsTermsAccepted" />
-        <label class="form-check-label" asp-for="IsTermsAccepted">I agree to Terms and Conditions</label>
-        @* <span asp-validation-for="IsTermsAccepted" id="termsError" class="text-danger"></span> *@
-        <span class="text-danger" id="termsError"></span>
-        
-    </div>
-
-
-    <br />
-    <button type="submit" class="btn btn-primary">Register</button>
-</form>
+</div>
 
 @section Scripts {
     <!-- jQuery first -->

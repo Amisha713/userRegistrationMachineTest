@@ -19,7 +19,7 @@ $(document).ready(function () {
                 }
             });
         }
-
+    });
        
 
         // Read image file and convert to base64 on file input change
@@ -33,19 +33,30 @@ $(document).ready(function () {
                 reader.readAsDataURL(file);
             }
         });
-    });
+   
 
     // Client-side Validation
     $("#userForm").submit(function (e) {
         let valid = true;
         let contact = $("#ContactNumber").val().trim();
-        let email = $("#Email").val().trim();
+        let mobile = $("#MobileNumber").val().trim();
+        let dob = $("#DateOfBirth").val().trim();
+        let name = $("#Name").val().trim();
         let termsChecked = $("#IsTermsAccepted").is(":checked");
 
 
-        // Check Contact or Email required
-        if (contact === "" && email === "") {
-            alert("Either Email or Contact Number is required.");
+        // Check Contact or mobile required
+        if (contact === "" && mobile === "") {
+            alert("Either mobile or phone Number is required.");
+            valid = false;
+        }
+
+        if (dob === "") {
+            $("#DOBError").text("Date of birth is required");
+            valid = false;
+        }
+        if (name === "") {
+            $("#DateOfBirth").text("Please agree to Terms and Conditions.");
             valid = false;
         }
 
@@ -57,8 +68,11 @@ $(document).ready(function () {
             $("#termsError").text("");
         }
 
-        if (!valid)
-            e.preventDefault();
+        if (!valid) {
+        e.preventDefault();
+        return;
+        }
+  
     });
 });
 
