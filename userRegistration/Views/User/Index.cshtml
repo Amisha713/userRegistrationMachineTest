@@ -1,0 +1,38 @@
+﻿@model IEnumerable<userRegistration.Models.User>
+
+@{
+    ViewData["Title"] = "User List";
+}
+
+<h2>Registered Users</h2>
+
+<form method="get" class="form-inline mb-3">
+    <input type="text" name="searchName" class="form-control" placeholder="Search by name..." value="@ViewBag.SearchName" />
+    <button type="submit" class="btn btn-secondary ml-2">Search</button>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>Contact</th>
+            <th>State</th>
+            <th>City</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td><a href="mailto:@user.Email">@user.Name</a></td>
+                <td>@user.Gender</td>
+                <td>@user.Email</td>
+                <td>@user.ContactNumber</td>
+                <td>@user.State?.Name</td>
+                <td>@user.City?.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>
